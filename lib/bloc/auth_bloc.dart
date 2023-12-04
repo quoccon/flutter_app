@@ -1,7 +1,6 @@
-import 'dart:async';
-// ignore: depend_on_referenced_packages
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
+import 'package:equatable/equatable.dart';
 
 abstract class AuthEvent {}
 
@@ -12,7 +11,10 @@ class LoginEvent extends AuthEvent {
   LoginEvent({required this.username, required this.password});
 }
 
-abstract class AuthState {}
+abstract class AuthState extends Equatable {
+  @override
+  List<Object?> get props => [];
+}
 
 class AuthInitial extends AuthState {}
 
@@ -20,33 +22,45 @@ class AuthLoading extends AuthState {}
 
 class AuthAuthenticated extends AuthState {}
 
-class AuthError extends AuthState {}
+class AuthError extends AuthState {
+  final String errorMessage;
 
-class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final Dio dio = Dio();
-
-  AuthBloc() : super(AuthInitial());
+  AuthError({required this.errorMessage});
 
   @override
-  Stream<AuthState> mapEventToState(AuthEvent event) async* {
-    if (event is LoginEvent) {
-      yield AuthLoading();
-      try {
-        // Gọi API
-        final response = await dio.post(
-          'http://localhost:8000/login-api',
-          data: {'username': event.username, 'password': event.password},
-        );
+  List<Object?> get props => [errorMessage];
+}
 
-        // Kiểm tra xem API có trả về thành công không
-        if (response.statusCode == 200) {
-          yield AuthAuthenticated();
-        } else {
-          yield AuthError();
-        }
-      } catch (e) {
-        yield AuthError();
+class AuthCubit extends Cubit<AuthState> {
+  final Dio dio = Dio();
+
+  AuthCubit() : super(AuthInitial());
+
+  void login(String username, String password) async {
+    print('user ==   ${username.isEmpty}');
+    print('password ==   ${password.isEmpty}');
+
+    if (username.isEmpty || password.isEmpty) {
+      print('2');
+      emit(AuthError(errorMessage: "Vui lòng nhập đầy đủ thông tin!"));
+      return;
+    }
+    emit(AuthLoading());
+
+    try {
+      // Gọi API
+      final response = await dio.post(
+        'http://localhost:8000/login-api',
+        data: {'username': username, 'password': password},
+      );
+
+      if (response.statusCode == 200) {
+        emit(AuthAuthenticated());
+      } else {
+        emit(AuthError(errorMessage: "Tên người dùng hoặc mật khẩu không hợp lệ"));
       }
+    } catch (e) {
+      emit(AuthError(errorMessage: "Đã xảy ra lỗi khi xử lý yêu cầu của bạn"));
     }
   }
 }
