@@ -87,7 +87,7 @@ class _LoginFormState extends State<LoginForm> {
                 );
 
                 if(authCubit.state is AuthAuthenticated){
-                  Navigator.pushReplacement(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const HomeScreen(),
