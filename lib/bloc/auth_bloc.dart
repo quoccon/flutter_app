@@ -1,6 +1,8 @@
+// ignore: depend_on_referenced_packages
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 abstract class AuthEvent {}
 
@@ -41,7 +43,6 @@ class AuthCubit extends Cubit<AuthState> {
     print('password ==   ${password.isEmpty}');
 
     if (username.isEmpty || password.isEmpty) {
-      print('2');
       emit(AuthError(errorMessage: "Vui lòng nhập đầy đủ thông tin!"));
       return;
     }
@@ -61,6 +62,38 @@ class AuthCubit extends Cubit<AuthState> {
       }
     } catch (e) {
       emit(AuthError(errorMessage: "Đã xảy ra lỗi khi xử lý yêu cầu của bạn"));
+    }
+  }
+
+
+  void register(String usernameController, String passwordController, String confirmPassword) async {
+    final username =  usernameController;
+    final password = passwordController;
+
+    if(username.isEmpty || password.isEmpty || confirmPassword.isEmpty ) {
+      emit(AuthError(errorMessage: "Vui lòng nhập đầy đủ thông tin"));
+      return;
+    }
+    if(password != confirmPassword){
+      emit(AuthError(errorMessage: "Mật khẩu không trùng khớp"));
+    }
+    emit(AuthLoading());
+
+    try {
+      final response = await dio.post(
+        'http://localhost:8000/reg-api',
+        data: {'username':username, 'password':password, 'confirmpassword':confirmPassword}
+      );
+
+      if(response.statusCode == 200){
+        emit(AuthAuthenticated());
+        print('user ==  ${username.isEmpty}');
+         print('pass ==  ${password.isEmpty}');
+      }else{
+        emit(AuthError(errorMessage: "Tài khoản đã tồn tại"));
+      }
+    } catch (e) {
+      emit(AuthError(errorMessage: "Đã có lỗi khi xử lí yêu cầu của bạn"));
     }
   }
 }

@@ -1,4 +1,4 @@
-import 'dart:math';
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/screen/users/regsiter_screen.dart';
@@ -63,13 +63,12 @@ class _LoginFormState extends State<LoginForm> {
             decoration: const InputDecoration(labelText: "Password"),
             obscureText: true,
           ),
-          // Visibility(
-          //   visible: authCubit.state is AuthError && (usernameController.text.isEmpty || passwordController.text.isEmpty),
-          //   child: Text(
-          //       (authCubit.state as AuthError).errorMessage,
-          //     style:const TextStyle(color: Colors.red),
-          //   ),
-          // ),
+          Visibility(
+            visible: showError && (usernameController.text.isEmpty || passwordController.text.isEmpty),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Text((authCubit.state is AuthError) ? (authCubit.state as AuthError).errorMessage:"",style:const TextStyle(color: Colors.red),),            ),
+          ),
           const SizedBox(
             height: 20.0,
           ),
@@ -77,7 +76,9 @@ class _LoginFormState extends State<LoginForm> {
             width: double.infinity,
             child: RawMaterialButton(
               onPressed: () {
-                print('1');
+                setState(() {
+                  showError = true;
+                });
                 // Call the login method from AuthCubit
                 authCubit.login(
                   usernameController.text,
