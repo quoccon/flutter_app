@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/screen/home.screen.dart';
 import 'package:flutter_app/screen/users/regsiter_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../bloc/auth_bloc.dart';
@@ -84,6 +85,15 @@ class _LoginFormState extends State<LoginForm> {
                   usernameController.text,
                   passwordController.text,
                 );
+
+                if(authCubit.state is AuthAuthenticated){
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const HomeScreen(),
+                    )
+                  );
+                }
               },
               fillColor: Colors.blue,
               shape: RoundedRectangleBorder(

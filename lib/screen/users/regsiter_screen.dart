@@ -92,7 +92,7 @@ class _RegisterFormState extends State<RegisterForm> {
             width: double.infinity,
             child: RawMaterialButton(
               onPressed: () {
-                
+                print('1');
                 setState(() {
                   showError = true;
                 });

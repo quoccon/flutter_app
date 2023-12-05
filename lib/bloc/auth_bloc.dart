@@ -1,4 +1,6 @@
 // ignore: depend_on_referenced_packages
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
@@ -22,7 +24,13 @@ class AuthInitial extends AuthState {}
 
 class AuthLoading extends AuthState {}
 
-class AuthAuthenticated extends AuthState {}
+class AuthAuthenticated extends AuthState {
+  final String msg;
+
+  AuthAuthenticated({required this.msg});
+  @override
+  List<Object?> get props => [msg];
+}
 
 class AuthError extends AuthState {
   final String errorMessage;
@@ -38,7 +46,10 @@ class AuthCubit extends Cubit<AuthState> {
 
   AuthCubit() : super(AuthInitial());
 
-  void login(String username, String password) async {
+  void login(String usernameController, String passwordController) async {
+    final username =  usernameController;
+    final password = passwordController;
+
     print('user ==   ${username.isEmpty}');
     print('password ==   ${password.isEmpty}');
 
@@ -47,21 +58,27 @@ class AuthCubit extends Cubit<AuthState> {
       return;
     }
     emit(AuthLoading());
+    print('6');
 
     try {
       // Gọi API
       final response = await dio.post(
-        'http://localhost:8000/login-api',
+        'http://10.0.2.2:8000/login-api',
         data: {'username': username, 'password': password},
+
       );
+      print('5');
+      jsonEncode(response.data);
 
       if (response.statusCode == 200) {
-        emit(AuthAuthenticated());
+        emit(AuthAuthenticated(msg: "oke"));
+        print('4');
       } else {
         emit(AuthError(errorMessage: "Tên người dùng hoặc mật khẩu không hợp lệ"));
       }
     } catch (e) {
       emit(AuthError(errorMessage: "Đã xảy ra lỗi khi xử lý yêu cầu của bạn"));
+      print(e.toString());
     }
   }
 
@@ -76,23 +93,26 @@ class AuthCubit extends Cubit<AuthState> {
     }
     if(password != confirmPassword){
       emit(AuthError(errorMessage: "Mật khẩu không trùng khớp"));
+      return;
     }
     emit(AuthLoading());
-
+    // print('2');
     try {
       final response = await dio.post(
-        'http://localhost:8000/reg-api',
+        'http://10.0.2.2:8000/reg-api',
         data: {'username':username, 'password':password, 'confirmpassword':confirmPassword}
       );
+      print(jsonEncode(response.data));
 
       if(response.statusCode == 200){
-        emit(AuthAuthenticated());
-        print('user ==  ${username.isEmpty}');
+        emit(AuthAuthenticated(msg: "ọke"));
+        print('user12 ==  ${username.isEmpty}');
          print('pass ==  ${password.isEmpty}');
       }else{
         emit(AuthError(errorMessage: "Tài khoản đã tồn tại"));
       }
     } catch (e) {
+      // print(e.toString());
       emit(AuthError(errorMessage: "Đã có lỗi khi xử lí yêu cầu của bạn"));
     }
   }
