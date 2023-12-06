@@ -46,7 +46,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   AuthCubit() : super(AuthInitial());
 
-  void login(String usernameController, String passwordController) async {
+  void login(String usernameController, String passwordController,Function() callback) async {
     final username =  usernameController;
     final password = passwordController;
 
@@ -73,6 +73,7 @@ class AuthCubit extends Cubit<AuthState> {
       if (response.statusCode == 200) {
         emit(AuthAuthenticated(msg: "oke"));
         print('4');
+        callback.call();
       } else {
         emit(AuthError(errorMessage: "Tên người dùng hoặc mật khẩu không hợp lệ"));
       }
@@ -83,7 +84,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
 
-  void register(String usernameController, String passwordController, String confirmPassword) async {
+  void register(String usernameController, String passwordController, String confirmPassword, Function() callback) async {
     final username =  usernameController;
     final password = passwordController;
 
@@ -95,6 +96,7 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthError(errorMessage: "Mật khẩu không trùng khớp"));
       return;
     }
+
     emit(AuthLoading());
     // print('2');
     try {
@@ -108,6 +110,7 @@ class AuthCubit extends Cubit<AuthState> {
         emit(AuthAuthenticated(msg: "ọke"));
         print('user12 ==  ${username.isEmpty}');
          print('pass ==  ${password.isEmpty}');
+         callback.call();
       }else{
         emit(AuthError(errorMessage: "Tài khoản đã tồn tại"));
       }

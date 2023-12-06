@@ -1,7 +1,5 @@
-
-
 import 'package:flutter/material.dart';
-import 'package:flutter_app/screen/home.screen.dart';
+import 'package:flutter_app/home.page.dart';
 import 'package:flutter_app/screen/users/regsiter_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../bloc/auth_bloc.dart';
@@ -31,190 +29,204 @@ class _LoginFormState extends State<LoginForm> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool showError = false;
+  late AuthCubit authCubit;
+  @override
+  void initState() {
+    authCubit = context.read<AuthCubit>();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final AuthCubit authCubit = BlocProvider.of<AuthCubit>(context);
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "My App",
-            style: TextStyle(
-                fontSize: 28, color: Colors.black, fontWeight: FontWeight.bold),
-          ),
-          const Text(
-            "Login to My App",
-            style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w400, fontSize: 18),
-          ),
-          TextField(
-            controller: usernameController,
-            decoration: const InputDecoration(labelText: "Username"),
-          ),
-          const SizedBox(
-            height: 10.0,
-          ),
-          TextField(
-            controller: passwordController,
-            decoration: const InputDecoration(labelText: "Password"),
-            obscureText: true,
-          ),
-          Visibility(
-            visible: showError && (usernameController.text.isEmpty || passwordController.text.isEmpty),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text((authCubit.state is AuthError) ? (authCubit.state as AuthError).errorMessage:"",style:const TextStyle(color: Colors.red),),            ),
-          ),
-          const SizedBox(
-            height: 20.0,
-          ),
-          SizedBox(
-            width: double.infinity,
-            child: RawMaterialButton(
-              onPressed: () {
-                setState(() {
-                  showError = true;
-                });
-                // Call the login method from AuthCubit
-                authCubit.login(
-                  usernameController.text,
-                  passwordController.text,
-                );
-
-                if(authCubit.state is AuthAuthenticated){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const HomeScreen(),
-                    )
-                  );
-                }
-              },
-              fillColor: Colors.blue,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: const Padding(
-                padding: EdgeInsets.all(16.0),
+    return BlocBuilder<AuthCubit, AuthState>(builder: (context, state) {
+      return  Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "My App",
+              style: TextStyle(
+                  fontSize: 28, color: Colors.black, fontWeight: FontWeight.bold),
+            ),
+            const Text(
+              "Login to My App",
+              style: TextStyle(
+                  color: Colors.black, fontWeight: FontWeight.w400, fontSize: 18),
+            ),
+            TextField(
+              controller: usernameController,
+              decoration: const InputDecoration(labelText: "Username"),
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+            TextField(
+              controller: passwordController,
+              decoration: const InputDecoration(labelText: "Password"),
+              obscureText: true,
+            ),
+            Visibility(
+              visible: showError &&
+                  (usernameController.text.isEmpty ||
+                      passwordController.text.isEmpty),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
-                  'Login',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18.0,
-                  ),
+                  (authCubit.state is AuthError)
+                      ? (authCubit.state as AuthError).errorMessage
+                      : "",
+                  style: const TextStyle(color: Colors.red),
                 ),
               ),
             ),
-          ),
-          const SizedBox(
-            height: 30.0,
-          ),
-          Row(
-            children: [
-              const Text(
-                "Don't have an account?",
-                style: TextStyle(fontSize: 16),
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const RegisterScreen(),
-                    ),
+            const SizedBox(
+              height: 20.0,
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: RawMaterialButton(
+                onPressed: () {
+                  setState(() {
+                    showError = true;
+                  });
+                  // Call the login method from AuthCubit
+                  authCubit.login(
+                    usernameController.text,
+                    passwordController.text,
+                      (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomePage(),
+                          )
+                        );
+                      }
                   );
                 },
-                child: const Text(
-                  "Register",
-                  style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.blue,
-                      fontWeight: FontWeight.w500),
+                fillColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    'Login',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18.0,
+                    ),
+                  ),
                 ),
               ),
-            ],
-          ),
-          const SizedBox(
-            height: 10.0,
-          ),
-          const Center(
-            child: Text(
-              "or",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-          ),
-          Container(
-            width: double.infinity,
-            height: 0.5,
-            color: Colors.black,
-          ),
-          const SizedBox(
-            height: 20.0,
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            textDirection: TextDirection.ltr,
-            children: [
-              Container(
-                height: 50,
-                width: 150,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
+            const SizedBox(
+              height: 30.0,
+            ),
+            Row(
+              children: [
+                const Text(
+                  "Don't have an account?",
+                  style: TextStyle(fontSize: 16),
                 ),
-                child: const Padding(
-                  padding: EdgeInsets.only(left: 10.0),
-                  child: Row(
-                    children: [
-                      Text("Login with FB"),
-                    ],
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RegisterScreen(),
+                      ),
+                    );
+                  },
+                  child: const Text(
+                    "Register",
+                    style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.blue,
+                        fontWeight: FontWeight.w500),
                   ),
                 ),
+              ],
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+            const Center(
+              child: Text(
+                "or",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              Expanded(
-                child: Container(),
-              ),
-              Container(
-                height: 50,
-                width: 150,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: const Padding(
-                  padding: EdgeInsets.only(left: 10.0),
-                  child: Row(
-                    children: [
-                      Text("Login with Google"),
+            ),
+            Container(
+              width: double.infinity,
+              height: 0.5,
+              color: Colors.black,
+            ),
+            const SizedBox(
+              height: 20.0,
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              textDirection: TextDirection.ltr,
+              children: [
+                Container(
+                  height: 50,
+                  width: 150,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: const Offset(0, 3),
+                      ),
                     ],
                   ),
+                  child: const Padding(
+                    padding: EdgeInsets.only(left: 10.0),
+                    child: Row(
+                      children: [
+                        Text("Login with FB"),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+                Expanded(
+                  child: Container(),
+                ),
+                Container(
+                  height: 50,
+                  width: 150,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.only(left: 10.0),
+                    child: Row(
+                      children: [
+                        Text("Login with Google"),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    });
   }
 }
