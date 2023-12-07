@@ -106,21 +106,41 @@ class _RegisterFormState extends State<RegisterForm> {
                   setState(() {
                     showError = true;
                   });
-                  // Call the register method from AuthCubit
                   authCubit.register(
                     usernameController.text,
                     passwordController.text,
                     confirmPasswordController.text,
-                    () {
+                        () async {
+                      // Hiển thị CircularProgressIndicator()
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const AlertDialog(
+                            content: SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        },
+                      );
+
+                      // Đợi 3 giây
+                      await Future.delayed(const Duration(seconds: 3));
+
+                      // Tắt AlertDialog
+                      Navigator.of(context).pop();
+
+                      // Chuyển màn hình sang trang đăng nhập
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>const LoginPage(),
-                          )
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginPage(),
+                        ),
                       );
                     },
-
                   );
+
 
                 },
                 fillColor: Colors.blue,
