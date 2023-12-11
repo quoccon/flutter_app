@@ -1,34 +1,50 @@
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
+import 'package:meta/meta.dart';
 
-abstract class ChatEvent {}
 
-class SendMessEvent extends ChatEvent{
-  final String message;
+abstract class MessageEvent{}
+
+class SendMessEvent extends MessageEvent{
   final String receiverId;
+  final String message;
 
-  SendMessEvent({required this.message, required this.receiverId});
+  SendMessEvent({required this.receiverId, required this.message});
 }
 
-class ChatState{}
+abstract class MessState {}
 
-class ChatLoadState extends ChatState{
-    final List<String> message;
+class MessInitialState extends MessState{}
 
-    ChatLoadState({required this.message});
+class MessSuccessState extends MessState{
+  final dynamic data;
+
+  MessSuccessState({required this.data});
 }
 
-class ChatError extends ChatState{
+class MessError extends MessState {
   final String error;
-  ChatError({required this.error});
+
+  MessError({required this.error});
 }
 
-class ChatCubit extends Cubit<ChatState>{
-  ChatCubit() : super(ChatLoadState(message: []));
+class MessageCubit extends Cubit<MessState>{
+  final Dio dio = Dio();
+
+  MessageCubit() : super(MessInitialState());
+
+  Future<void> sendMess({required String receiverId, required String message}) async{
+    try{
+      final response = await dio.post(
+        "http://localhost:8000/api-postmessage",
+        data: {'receiverId': receiverId, 'message': message},
+      );
 
 
-  void sendMessage(String message, String receiverId){
-    List<String> updateMessage = (state as ChatLoadState).message;
-    updateMessage.add(message);
-    emit(ChatLoadState(message: updateMessage));
+      final data = response.data;
+      emit(MessSuccessState(data: data));
+    }catch(e){
+      emit(MessError(error: "Error sending message"));
+    }
   }
 }

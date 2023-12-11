@@ -7,7 +7,8 @@ class ApiService {
 
   Future<Response> sendMessage(String message, String receiverId){
     return dio.post(
-      "",data: {'message':message, 'receiverId': receiverId},
+      "http://localhost:8000/api-postmessage",
+      data: {'message':message, 'receiverId': receiverId},
     );
   }
 }
