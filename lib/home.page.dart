@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/screen/home.sreen.dart';
-import 'package:flutter_app/screen/notification.screen.dart';
+import 'package:flutter_app/screen/friends.screen.dart';
 import 'package:flutter_app/screen/profile.screen.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,7 +15,7 @@ class _HomePageState extends State<HomePage> {
 
   static const List<Widget> widgetOptons = <Widget>[
     HomeScreen(receiveId: '',),
-    NotificationScreen(),
+    FriendsScreen(),
     ProfileScreen()
   ];
 
@@ -39,8 +39,8 @@ class _HomePageState extends State<HomePage> {
               label: "Home",
             ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: "Notification",
+            icon: Icon(Icons.person_search),
+            label: "Friends",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
