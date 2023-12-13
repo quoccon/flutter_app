@@ -4,87 +4,35 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/auth_bloc.dart';
 
 class HomeScreen extends StatelessWidget {
-  final String receiveId;
-
-  const HomeScreen({super.key, required this.receiveId});
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => MessageCubit(),
-      child: BlocConsumer<MessageCubit,MessState>(
-        listener: (context,state){
-          if(state is MessSuccessState){
-
-          }else if(state is MessError){
-
-          }
-        },
-        builder: (context,state){
-          return Scaffold(
-            appBar: AppBar(
-              title: Text("Chat with $receiveId"),
-            ),
-            // body: Column(
-            //   children: [
-            //     Expanded(
-            //       child: MessList(),
-            //     )
-            //     Mes
-            //   ],
-            // ),
-          );
-        },
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Chat Screen"),
       ),
+
     );
   }
 }
 
-
-// class MessList extends StatelessWidget {
-//   const MessList({super.key});
+// class ChatBody extends StatelessWidget {
+//   final TextEditingController messageControl = TextEditingController();
+//
+//   const ChatBody({super.key});
 //
 //   @override
 //   Widget build(BuildContext context) {
-//     return BlocBuilder<MessageCubit, MessState>(
-//       builder: (context, state) {
-//         if (state is MessSuccessState) {
-//           final messages = state.data['messages'];
-//           return ListView.builder(
-//             itemCount: messages.length,
-//             reverse: true,
-//             itemBuilder: (context, index) {
-//               final message = messages[index];
-//               return MessageWidget(message: message);
-//             },
-//           );
-//         } else {
+//     return Column(
+//       children: [
 //
-//           return Container();
-//         }
-//       },
+//       ],
 //     );
 //   }
 // }
 
 
 
-// class MessageWidget extends StatelessWidget {
-//   final Map<String , dynamic> message;
-//   const MessageWidget({super.key, required this.message});
-//
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final bool isCurrent = message['senderId'] == curentUser;
-//     return Align(
-//       alignment: isCurrent ? Alignment.centerRight : Alignment.centerLeft,
-//       child: Container(
-//
-//       ),
-//
-//     )
-//   }
-// }
 
 

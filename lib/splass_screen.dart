@@ -1,8 +1,43 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_app/screen/users/login_screen.dart';
 
-class SplassScreen extends StatelessWidget {
-  const SplassScreen({super.key});
+class PlashScreen extends StatefulWidget {
+  const PlashScreen({Key? key}) : super(key: key);
 
+  @override
+  State<PlashScreen> createState() => _PlashScreenState();
+}
+
+class _PlashScreenState extends State<PlashScreen> with TickerProviderStateMixin{
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(seconds: 3),
+    vsync: this
+  )..repeat();
+
+  late final Animation<double> _animation = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.fastLinearToSlowEaseIn,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    Timer(
+      const Duration(seconds: 4),
+        () => Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginPage())
+        )
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -10,8 +45,13 @@ class SplassScreen extends StatelessWidget {
         width: double.infinity,
         height: double.infinity,
         color: Colors.black,
-        child: const Center(
-          child: Text("Welcome to App",style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold,color: Colors.white),),
+        child: SizeTransition(
+          sizeFactor: _animation,
+          axis: Axis.horizontal,
+          axisAlignment: -1,
+          child: const Center(
+            child: Text("My App",style: TextStyle(color: Colors.white,fontSize: 28,fontWeight: FontWeight.bold),),
+          ),
         ),
       ),
     );

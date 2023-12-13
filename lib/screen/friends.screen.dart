@@ -9,20 +9,51 @@ class FriendsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: BlocProvider(
-      create: (context) => UserEvent(),
-      child: const UserList(),
+      create: (context) => UserCubit(),
+      child: const Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: SearchBar(),
+          ),
+          Expanded(
+            child: UserList(),
+          )
+        ],
+      ),
     ));
   }
 }
+
+class SearchBar extends StatelessWidget {
+  const SearchBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      onChanged: (query){
+        context.read<UserCubit>().searchU(query);
+      },
+      decoration: InputDecoration(
+        hintText: "Search here...",
+        prefixIcon: const Icon(Icons.search),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        )
+      ),
+    );
+  }
+}
+
 
 class UserList extends StatelessWidget {
   const UserList({super.key});
 
   @override
   Widget build(BuildContext context) {
-    context.read<UserEvent>().fetchData();
+    context.read<UserCubit>().fetchData();
 
-    return BlocBuilder<UserEvent, List<User>>(
+    return BlocBuilder<UserCubit  , List<User>>(
       builder: (context, userList) {
         return userList.isEmpty
             ? const Center(

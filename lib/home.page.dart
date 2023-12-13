@@ -14,7 +14,7 @@ class _HomePageState extends State<HomePage> {
   int selectedIndex = 0;
 
   static const List<Widget> widgetOptons = <Widget>[
-    HomeScreen(receiveId: '',),
+    HomeScreen(),
     FriendsScreen(),
     ProfileScreen()
   ];
