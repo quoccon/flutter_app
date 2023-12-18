@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../bloc/frofile_cubit.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -6,43 +8,30 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:  Padding(
-        padding: const EdgeInsets.only(top: 20.0,left: 20.0,right: 20.0),
-        child: Column(
-          children: [
-            Container(
-              child: Center(
-                child:  Column(
-                  children: [
-                    Container(
-                      width: 150,
-                      height: 150,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100.0),
-                          color: Colors.blue
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Text("Quốc Con", style: TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.bold),),
-                  ],
-                ),
-              )
-            ),
-            Container(
-              width: double.infinity,
-              child: const Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text("dyguasdgyu")
-                ],
-              ),
-            )
-
-          ],
-        ),
+      body: BlocProvider(
+        create: (context) => UserCubit(),
+        child: ProfileBody(),
       ),
     );
   }
 }
+
+class ProfileBody extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text("sabhsv"),
+    );
+  }
+}
+
+Widget buildProfileItem(String title, IconData icon, VoidCallback onTap){
+    return ListTile(
+      onTap: onTap,
+      leading: Icon(icon),
+      title: Text(title),
+      trailing: Icon(Icons.arrow_forward_ios),
+    );
+}
+

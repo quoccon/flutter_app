@@ -31,20 +31,18 @@ class SearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      onChanged: (query){
+      onChanged: (query) {
         context.read<UserCubit>().searchU(query);
       },
       decoration: InputDecoration(
-        hintText: "Search here...",
-        prefixIcon: const Icon(Icons.search),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        )
-      ),
+          hintText: "Search here...",
+          prefixIcon: const Icon(Icons.search),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          )),
     );
   }
 }
-
 
 class UserList extends StatelessWidget {
   const UserList({super.key});
@@ -53,7 +51,7 @@ class UserList extends StatelessWidget {
   Widget build(BuildContext context) {
     context.read<UserCubit>().fetchData();
 
-    return BlocBuilder<UserCubit  , List<User>>(
+    return BlocBuilder<UserCubit, List<User>>(
       builder: (context, userList) {
         return userList.isEmpty
             ? const Center(
@@ -63,8 +61,19 @@ class UserList extends StatelessWidget {
                 itemCount: userList.length,
                 itemBuilder: (context, index) {
                   final user = userList[index];
-                  return ListTile(
-                    title: Text(user.username),
+                  return Column(
+                    children: [
+                      ListTile(
+                        title: Text(user.username),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 20, right: 20),
+                        child: Divider(
+                          thickness: 1,
+                          color: Colors.grey,
+                        ),
+                      )
+                    ],
                   );
                 },
               );

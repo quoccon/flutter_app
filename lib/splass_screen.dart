@@ -10,48 +10,45 @@ class PlashScreen extends StatefulWidget {
   State<PlashScreen> createState() => _PlashScreenState();
 }
 
-class _PlashScreenState extends State<PlashScreen> with TickerProviderStateMixin{
+class _PlashScreenState extends State<PlashScreen>
+    with TickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     duration: const Duration(seconds: 3),
-    vsync: this
+    vsync: this,
   )..repeat();
 
   late final Animation<double> _animation = CurvedAnimation(
     parent: _controller,
-    curve: Curves.fastLinearToSlowEaseIn,
+    curve: Curves.fastOutSlowIn,
   );
-
-  @override
-  void initState() {
-    super.initState();
-    Timer(
-      const Duration(seconds: 4),
-        () => Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginPage())
-        )
-    );
-  }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
+
+  @override
+  void initState() {
+    super.initState();
+    Timer(
+      const Duration(seconds: 4),
+      () => Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: Colors.black,
-        child: SizeTransition(
-          sizeFactor: _animation,
-          axis: Axis.horizontal,
-          axisAlignment: -1,
-          child: const Center(
-            child: Text("My App",style: TextStyle(color: Colors.white,fontSize: 28,fontWeight: FontWeight.bold),),
-          ),
+      body: SizeTransition(
+        sizeFactor: _animation,
+        axis: Axis.horizontal,
+        axisAlignment: -1,
+        child: const Center(
+          child: Text("My App"),
         ),
       ),
     );

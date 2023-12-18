@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
     ProfileScreen()
   ];
 
-  void onItemTap(int index){
+  void onItemTap(int index) {
     setState(() {
       selectedIndex = index;
     });
@@ -31,13 +31,12 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         child: widgetOptons.elementAt(selectedIndex),
       ),
-
       bottomNavigationBar: BottomNavigationBar(
-        items:const <BottomNavigationBarItem> [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: "Home",
-            ),
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: "Home",
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_search),
             label: "Friends",
@@ -54,4 +53,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
